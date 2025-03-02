@@ -25,9 +25,9 @@ class MapApp(QtWidgets.QMainWindow):
         zoom = self.api_worker.get_zoom()
 
         key = event.key()
-        if key == Qt.Key.Key_PageUp or key == Qt.Key.Key_W and all([0.001 < value / 2 < 1 for value in zoom]):
+        if key == Qt.Key.Key_PageUp or key == Qt.Key.Key_W and all([0.001 < value / 2 < 21 for value in zoom]):
             self.api_worker.set_zoom([value / 2 for value in zoom])
-        elif key == Qt.Key.Key_Down or key == Qt.Key.Key_S and all([0.001 < value * 2 < 1 for value in zoom]):
+        elif key == Qt.Key.Key_Down or key == Qt.Key.Key_S and all([0.001 < value * 2 < 21 for value in zoom]):
             self.api_worker.set_zoom([value * 2 for value in zoom])
 
         self.set_image()
