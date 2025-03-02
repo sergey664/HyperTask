@@ -6,42 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>332</width>
-    <height>329</height>
+    <width>800</width>
+    <height>679</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Поиск</string>
+   <string>Задача 1</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
+   <widget class="QLabel" name="mapLabel">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>331</width>
-      <height>291</height>
+      <x>4</x>
+      <y>5</y>
+      <width>781</width>
+      <height>621</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLineEdit" name="coordsLabel"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="findButton">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="mapLabel">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -49,8 +33,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>332</width>
-     <height>18</height>
+     <width>800</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>

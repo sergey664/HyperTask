@@ -2,6 +2,8 @@ import sys
 from io import BytesIO
 
 import requests
+from urllib3 import Retry
+from requests.adapters import HTTPAdapter
 from PIL import Image
 
 
@@ -41,7 +43,12 @@ class ApiWorker:
         try:
             self.geocoder_parameters["geocode"] = geocode
 
-            response = requests.get(self.geocoder_api_server, params=self.geocoder_parameters)
+            session = requests.Session()
+            retry = Retry(total=10, connect=5, backoff_factor=0.5)
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount('https://', adapter)
+
+            response = session.get(self.geocoder_api_server, params=self.geocoder_parameters)
 
             self.geocoder_parameters["geocode"] = ""
 
@@ -61,7 +68,12 @@ class ApiWorker:
             if pt:
                 self.static_maps_parameters["pt"] = ",".join([self.static_maps_parameters["ll"], pt])
 
-            response = requests.get(self.static_maps_server, params=self.static_maps_parameters)
+            session = requests.Session()
+            retry = Retry(total=10, connect=5, backoff_factor=0.5)
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount('https://', adapter)
+
+            response = session.get(self.static_maps_server, params=self.static_maps_parameters)
 
             assert "image" in response.headers.get("Content-Type")
 
