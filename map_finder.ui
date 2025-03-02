@@ -7,25 +7,38 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>679</height>
+    <height>730</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Задача 1</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="mapLabel">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>4</x>
-      <y>5</y>
-      <width>781</width>
-      <height>621</height>
+      <x>-1</x>
+      <y>-1</y>
+      <width>751</width>
+      <height>691</height>
      </rect>
     </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QCheckBox" name="styleBox">
+       <property name="text">
+        <string>Темная тема</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="mapLabel">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -34,7 +47,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>18</height>
     </rect>
    </property>
   </widget>

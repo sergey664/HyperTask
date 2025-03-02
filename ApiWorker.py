@@ -10,7 +10,7 @@ from PIL import Image
 class ApiWorker:
 
     geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
-    static_maps_server = "https://static-maps.yandex.ru/1.x/"
+    static_maps_server = "https://static-maps.yandex.ru/v1?"
 
     def __init__(self):
         self.geocoder_parameters = {
@@ -20,9 +20,11 @@ class ApiWorker:
         }
 
         self.static_maps_parameters = {
-            "l": "map",
+            "apikey": "f3a0fe3a-b07e-4840-a1da-06f18b2ddf13",
+            "lang": "ru_RU",
             "ll": "",
-            "spn": "",
+            "z": "18",
+            "theme": "light",
             "pt": ""
         }
 
@@ -39,19 +41,21 @@ class ApiWorker:
 
         return [abs(float(left) - float(right)) / 2, abs(float(bottom) - float(top)) / 2]
 
+    def set_style(self, dark=False):
+        self.static_maps_parameters["theme"] = "dark" if dark else "light"
+
     def get_coordinates(self):
         return [float(value) for value in self.static_maps_parameters["ll"].split(",")]
 
     def get_zoom(self):
-        return [float(value) for value in self.static_maps_parameters["spn"].split(",")]
+        return int(self.static_maps_parameters["z"])
 
     def set_coordinates(self, coordinates):
         if len(coordinates) == 2:
             self.static_maps_parameters["ll"] = ",".join([str(value) for value in coordinates])
 
     def set_zoom(self, zoom):
-        if len(zoom) == 2:
-            self.static_maps_parameters["spn"] = ",".join([str(value) for value in zoom])
+        self.static_maps_parameters["z"] = str(zoom)
 
     def find_geocoder_info(self, geocode):
         try:
@@ -78,7 +82,7 @@ class ApiWorker:
             toponym = self.find_geocoder_info(geocode)
 
             self.set_coordinates(self.get_ll(toponym))
-            self.set_zoom(self.get_spn(toponym))
+            # self.set_zoom(self.get_spn(toponym))
 
             session = requests.Session()
             retry = Retry(total=10, connect=5, backoff_factor=0.5)

@@ -15,6 +15,8 @@ class MapApp(QtWidgets.QMainWindow):
         self.api_worker = ApiWorker()
         self.mapLabel.setPixmap(QPixmap(300, 300))
 
+        self.styleBox.stateChanged.connect(self.change_style)
+
         self.shift = [0, 0]
 
         self.coordinates = "Москва, Красная Площадь 1"
@@ -26,24 +28,30 @@ class MapApp(QtWidgets.QMainWindow):
     def keyPressEvent(self, event):
         zoom = self.api_worker.get_zoom()
         coordinates = self.api_worker.get_coordinates()
+        print(0.01 / zoom)
 
         key = event.key()
-        if key == Qt.Key.Key_PageUp or key == Qt.Key.Key_Q and all([0.001 < value / 2 for value in zoom]):
-            self.api_worker.set_zoom([value / 2 for value in zoom])
-        elif key == Qt.Key.Key_Down or key == Qt.Key.Key_E and all([value * 2 < 21 for value in zoom]):
-            self.api_worker.set_zoom([value * 2 for value in zoom])
-        elif key == Qt.Key.Key_Up or key == Qt.Key.Key_W and abs(self.shift[1] + zoom[1]) < abs(5 * zoom[1]):
-            self.shift[1] += zoom[1]
-            self.api_worker.set_coordinates([coordinates[0], coordinates[1] + zoom[1]])
-        elif key == Qt.Key.Key_Down or key == Qt.Key.Key_S and abs(self.shift[1] + zoom[1]) < abs(5 * zoom[1]):
-            self.shift[1] -= zoom[1]
-            self.api_worker.set_coordinates([coordinates[0], coordinates[1] - zoom[1]])
-        elif key == Qt.Key.Key_Right or key == Qt.Key.Key_D and abs(self.shift[0] + zoom[0]) < abs(5 * zoom[0]):
-            self.shift[0] += zoom[0]
-            self.api_worker.set_coordinates([coordinates[0] + zoom[0], coordinates[1]])
-        elif key == Qt.Key.Key_Left or key == Qt.Key.Key_A and abs(self.shift[0] + zoom[0]) < abs(5 * zoom[0]):
-            self.shift[0] -= zoom[0]
-            self.api_worker.set_coordinates([coordinates[0] - zoom[0], coordinates[1]])
+        if key == Qt.Key.Key_PageUp or key == Qt.Key.Key_Q and zoom + 1 < 21:
+            self.api_worker.set_zoom(zoom + 1)
+        elif key == Qt.Key.Key_Down or key == Qt.Key.Key_E and zoom - 1 > 0:
+            self.api_worker.set_zoom(zoom - 1)
+        elif key == Qt.Key.Key_Up or key == Qt.Key.Key_W and abs(self.shift[1] + zoom) < abs(5 * zoom):
+            self.shift[1] += 0.1 / zoom
+            self.api_worker.set_coordinates([coordinates[0], coordinates[1] + 0.1 / zoom])
+        elif key == Qt.Key.Key_Down or key == Qt.Key.Key_S and abs(self.shift[1] + zoom) < abs(5 * zoom):
+            self.shift[1] -= 0.1 / zoom
+            self.api_worker.set_coordinates([coordinates[0], coordinates[1] - 0.1 / zoom])
+        elif key == Qt.Key.Key_Right or key == Qt.Key.Key_D and abs(self.shift[0] + zoom) < abs(5 * zoom):
+            self.shift[0] += 0.1 / zoom
+            self.api_worker.set_coordinates([coordinates[0] + 0.1 / zoom, coordinates[1]])
+        elif key == Qt.Key.Key_Left or key == Qt.Key.Key_A and abs(self.shift[0] + zoom) < abs(5 * zoom):
+            self.shift[0] -= 0.1 / zoom
+            self.api_worker.set_coordinates([coordinates[0] - 0.1 / zoom, coordinates[1]])
+
+        self.set_image()
+
+    def change_style(self):
+        self.api_worker.set_style(self.styleBox.isChecked())
 
         self.set_image()
 
