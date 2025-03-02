@@ -14,13 +14,15 @@ class MapApp(QtWidgets.QMainWindow):
         self.api_worker = ApiWorker()
         self.mapLabel.setPixmap(QPixmap(300, 300))
 
+        self.coordinates = "Москва, Красная Площадь 1"
+        self.image_path = "map.png"
+
+        self.api_worker.find_static_map_info(self.coordinates)
         self.find_location()
 
     def find_location(self):
-        coords = "Москва, Красная Площадь 1"
-        self.api_worker.load_static_map_info(coords)
-        image_path = "map.png"
-        pixmap = QPixmap(image_path)
+        self.api_worker.load_static_map_info()
+        pixmap = QPixmap(self.image_path)
         if not pixmap.isNull():
             self.mapLabel.setPixmap(pixmap)
             self.mapLabel.setScaledContents(True)

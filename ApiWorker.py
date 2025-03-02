@@ -28,7 +28,7 @@ class ApiWorker:
 
     @staticmethod
     def get_ll(toponym):
-        return ",".join(toponym["Point"]["pos"].split(" "))
+        return [float(value) for value in toponym["Point"]["pos"].split(" ")]
 
     @staticmethod
     def get_spn(toponym):
@@ -37,9 +37,23 @@ class ApiWorker:
         left, bottom = envelope["lowerCorner"].split(" ")
         right, top = envelope["upperCorner"].split(" ")
 
-        return ",".join([str(abs(float(left) - float(right)) / 2), str(abs(float(bottom) - float(top)) / 2)])
+        return [abs(float(left) - float(right)) / 2, abs(float(bottom) - float(top)) / 2]
 
-    def load_geocoder_info(self, geocode):
+    def get_coordinates(self):
+        return [float(value) for value in self.static_maps_parameters["ll"].split(",")]
+
+    def get_zoom(self):
+        return [float(value) for value in self.static_maps_parameters["spn"].split(",")]
+
+    def set_coordinates(self, coordinates):
+        if len(coordinates) == 2:
+            self.static_maps_parameters["ll"] = ",".join([str(value) for value in coordinates])
+
+    def set_zoom(self, zoom):
+        if len(zoom) == 2:
+            self.static_maps_parameters["spn"] = ",".join([str(value) for value in zoom])
+
+    def find_geocoder_info(self, geocode):
         try:
             self.geocoder_parameters["geocode"] = geocode
 
@@ -59,15 +73,33 @@ class ApiWorker:
             print("GEOCODER ERROR!")
             sys.exit()
 
-    def load_static_map_info(self, geocode, pt=None):
+    def find_static_map_info(self, geocode):
         try:
-            toponym = self.load_geocoder_info(geocode)
+            toponym = self.find_geocoder_info(geocode)
 
-            self.static_maps_parameters["ll"] = self.get_ll(toponym)
-            self.static_maps_parameters["spn"] = self.get_spn(toponym)
-            if pt:
-                self.static_maps_parameters["pt"] = ",".join([self.static_maps_parameters["ll"], pt])
+            self.set_coordinates(self.get_ll(toponym))
+            self.set_zoom(self.get_spn(toponym))
 
+            session = requests.Session()
+            retry = Retry(total=10, connect=5, backoff_factor=0.5)
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount('https://', adapter)
+
+            response = session.get(self.static_maps_server, params=self.static_maps_parameters)
+
+            assert "image" in response.headers.get("Content-Type")
+
+            im = BytesIO(response.content)
+            im.seek(0)
+            opened_image = Image.open(im)
+            opened_image.save("map.png", format='PNG')
+
+        except AssertionError and Exception:
+            print("STATIC-MAPS ERROR!")
+            sys.exit()
+
+    def load_static_map_info(self):
+        try:
             session = requests.Session()
             retry = Retry(total=10, connect=5, backoff_factor=0.5)
             adapter = HTTPAdapter(max_retries=retry)
