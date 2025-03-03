@@ -32,15 +32,6 @@ class ApiWorker:
     def get_ll(toponym):
         return [float(value) for value in toponym["Point"]["pos"].split(" ")]
 
-    @staticmethod
-    def get_spn(toponym):
-        envelope = toponym["boundedBy"]["Envelope"]
-
-        left, bottom = envelope["lowerCorner"].split(" ")
-        right, top = envelope["upperCorner"].split(" ")
-
-        return [abs(float(left) - float(right)) / 2, abs(float(bottom) - float(top)) / 2]
-
     def set_style(self, dark=False):
         self.static_maps_parameters["theme"] = "dark" if dark else "light"
 
@@ -77,12 +68,14 @@ class ApiWorker:
             print("GEOCODER ERROR!")
             sys.exit()
 
-    def find_static_map_info(self, geocode):
+    def find_static_map_info(self, geocode, pt="pm2rdl"):
         try:
             toponym = self.find_geocoder_info(geocode)
 
             self.set_coordinates(self.get_ll(toponym))
-            # self.set_zoom(self.get_spn(toponym))
+
+            if pt:
+                self.static_maps_parameters["pt"] = ",".join([self.static_maps_parameters["ll"], pt])
 
             session = requests.Session()
             retry = Retry(total=10, connect=5, backoff_factor=0.5)

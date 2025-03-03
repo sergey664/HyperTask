@@ -20,19 +20,39 @@
       <x>-1</x>
       <y>-1</y>
       <width>751</width>
-      <height>691</height>
+      <height>727</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QCheckBox" name="styleBox">
-       <property name="text">
-        <string>Темная тема</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="coordEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="findButton">
+         <property name="text">
+          <string>Искать</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="styleBox">
+         <property name="text">
+          <string>Темная тема</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QLabel" name="mapLabel">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>700</height>
+        </size>
+       </property>
        <property name="text">
         <string>TextLabel</string>
        </property>
